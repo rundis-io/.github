@@ -1,0 +1,12 @@
+{
+    "name": "RUNDIS Organization Workflow",
+    "description": "RUNDIS Organization CI workflow template.",
+    "iconName": "rd-logo",
+    "categories": [
+        "Go"
+    ],
+    "filePatterns": [
+        "package.json$",
+        "^Dockerfile*"
+    ]
+}
