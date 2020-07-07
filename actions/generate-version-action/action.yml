@@ -1,0 +1,15 @@
+# action.yml
+name: 'Generate Version'
+description: 'Automatically create a new version tag'
+inputs:
+  ci-repository-url:  # id of input
+    description: 'The url of the repository to bump version'
+    required: true
+outputs:
+  version: # id of output
+    description: 'The version number that automatically created'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.ci-repository-url }}
