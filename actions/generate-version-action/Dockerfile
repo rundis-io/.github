@@ -4,7 +4,7 @@ FROM python:3.7-stretch
 COPY . .
 
 # Install Python requirements
-RUN pip install requirements.txt
+RUN pip install -r requirements.txt
 
 # Code file to execute when the docker container starts up (`entrypoint.sh`)
 ENTRYPOINT ["/entrypoint.sh"]
