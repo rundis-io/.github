@@ -15,7 +15,7 @@ jobs:
       uses: actions/checkout@v2
     
     - name: gen-semver
-      uses: ./.github/actions/generate-version-action
+      uses: rundis-io/.github/actions/generate-version-action@v1
       id: generate-version
       with:
         ci-repository-url: 'https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git'
