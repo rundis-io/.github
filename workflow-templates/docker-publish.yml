@@ -17,6 +17,8 @@ on:
   release:
     types:
       - published
+      - prereleased
+      - released
 
 env:
   # TODO: Change IMAGE_NAME to your image name
