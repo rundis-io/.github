@@ -1,0 +1,8 @@
+{
+    "name": "Release Creator Workflow",
+    "description": "automatically bump tag version and generate release on your master branch on each commit with the latest SemVer formatted version",
+    "iconName": "rd-logo",
+    "categories": [],
+    "filePatterns": []
+  }
+  
