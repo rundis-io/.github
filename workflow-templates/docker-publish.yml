@@ -12,6 +12,11 @@ on:
 
   # Run tests for any PRs.
   pull_request:
+  
+  # Run for created releases
+  release:
+    types:
+      - created
 
 env:
   # TODO: Change IMAGE_NAME to your image name
