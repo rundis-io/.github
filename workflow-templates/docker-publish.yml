@@ -16,6 +16,7 @@ on:
   # Run for created releases
   release:
     types:
+      - created
       - published
       - prereleased
       - released
