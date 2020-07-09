@@ -16,7 +16,7 @@ on:
   # Run for created releases
   release:
     types:
-      - created
+      - published
 
 env:
   # TODO: Change IMAGE_NAME to your image name
