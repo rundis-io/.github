@@ -1,0 +1,8 @@
+{
+    "name": "Docker Publish",
+    "description": "Build, test and push Docker image to GitHub Packages.",
+    "iconName": "rd-logo",
+    "categories": ["Dockerfile"],
+    "filePatterns": []
+  }
+  
