@@ -1,7 +1,0 @@
-{
-  "name": "Generate Version Workflow",
-  "description": "Workflow template to automatically generate version tags",
-  "iconName": "rd-logo",
-  "categories": [],
-  "filePatterns": []
-}
