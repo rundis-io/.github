@@ -12,8 +12,8 @@ env:
   HELM_REPO_URL: https://charts.rundis.io 
   HELM_REPO_USERNAME: ${{ secrets.HELM_REPO_USERNAME }}
   HELM_REPO_PASSWORD: ${{ secrets.HELM_REPO_PASSWORD }}
-  HELM_CHART_DIR: charts # CHANGEME
-  HELM_CHART_NAME: mychart # CHANGEME
+  HELM_CHART_DIR: charts 
+  HELM_CHART_NAME: mychart
 
 jobs:
   # Lint chart in HELM_CHART_DIR
