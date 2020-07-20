@@ -1,0 +1,129 @@
+name: Helm Chart
+
+on:
+  push:
+    # Publish `v1.2.3` tags as releases.
+    tags:
+      - v*
+
+env:
+  # TODO: Change HELM variables
+  HELM_REPO_NAME: rundis
+  HELM_REPO_URL: https://charts.rundis.io 
+  HELM_REPO_USERNAME: ${{ secrets.HELM_REPO_USERNAME }}
+  HELM_REPO_PASSWORD: ${{ secrets.HELM_REPO_PASSWORD }}
+  HELM_CHART_DIR: charts # CHANGEME
+  HELM_CHART_NAME: mychart # CHANGEME
+
+jobs:
+  # Lint chart in HELM_CHART_DIR
+  lint_helm_chart:
+    name: Lint Helm Chart
+    runs-on: ubuntu-latest
+    container: mikewhitehead/kubectl-helm:latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Lint
+        run: |
+          helm lint $HELM_CHART_DIR
+
+  # Package Helm chart
+  package_helm_chart:
+    name: Package Helm Chart
+    runs-on: ubuntu-latest
+    # Ensure test job passes before pushing image.
+    needs: lint_helm_chart
+    container: "mikewhitehead/kubectl-helm:latest"
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Helm Package
+        run: |
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+
+          # Use Docker `latest` tag convention
+          [ "$VERSION" == "master" ] && VERSION=latest
+
+          echo IMAGE_ID=$IMAGE_ID
+          echo VERSION=$VERSION
+          echo ::set-env name=VERSION::"$VERSION"
+
+          # Create Helm package
+          helm init --client-only
+          helm package --app-version "$VERSION" --version "$VERSION" -d $HELM_CHART_DIR -u $HELM_CHART_DIR
+
+      - name: Create Chart Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.HELM_CHART_NAME }}-${{ env.VERSION }}.tgz
+          path: ${{ env.HELM_CHART_DIR }} # or path/to/artifact
+
+  push_helm_chart_to_repo:
+    name: Push Helm Chart
+    runs-on: ubuntu-latest
+    needs: package_helm_chart
+    container: "mikewhitehead/kubectl-helm:latest"
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Determine Version
+        run: |
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+
+          # Use Docker `latest` tag convention
+          [ "$VERSION" == "master" ] && VERSION=latest
+
+          echo IMAGE_ID=$IMAGE_ID
+          echo VERSION=$VERSION
+          echo ::set-env name=VERSION::"$VERSION"
+      
+      - name: Create Artifact Storage
+        run: |
+          mkdir -p ${{ github.workspace }}/artifacts
+
+      - name: Download Chart Artifacts
+        uses: actions/download-artifact@v2
+        id: download
+        with:
+          name: ${{ env.HELM_CHART_NAME }}-${{ env.VERSION }}.tgz
+          path: ${{ github.workspace }}/artifacts
+
+      - name: Push Chart
+        working-directory: ${{steps.download.outputs.download-path}}
+        run: |
+          # Display file/folder structure
+          ls -R
+          
+          # Init Helm
+          helm init --client-only
+          helm repo add --username $HELM_REPO_USERNAME --password $HELM_REPO_PASSWORD $HELM_REPO_NAME $HELM_REPO_URL
+          helm repo update
+
+          # Install Helm Plugins
+          helm plugin install https://github.com/chartmuseum/helm-push.git
+          helm push $HELM_CHART_NAME-${{ env.VERSION }}.tgz $HELM_REPO_NAME
+
+
+
+
+
+
+
+    
+
+
+
+
+

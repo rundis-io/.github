@@ -1,0 +1,8 @@
+{
+    "name": "Helm Chart Release",
+    "description": "Lint, package and push Helm chart",
+    "iconName": "rd-logo",
+    "categories": ["Helm"],
+    "filePatterns": ["**/docs/**"]
+  }
+  
